@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Cliente } from './clientes/cliente.model';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app-clientes';
+  
+  clientes: Cliente[] = []
+  onClienteAdicionado (cliente){
+    // console.log('Adicionando o cliente: ' + JSON.stringify(cliente))
+    this.clientes = [...this.clientes, cliente]
+  }
 }
