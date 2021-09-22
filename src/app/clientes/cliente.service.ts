@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core'
 import { Cliente } from './cliente.model'
+import { Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
 import { Subject } from 'rxjs'
 
 //observable (Subject): Sofre eventos
@@ -10,12 +11,19 @@ import { Subject } from 'rxjs'
     providedIn: 'root'
 })
 export class ClienteService{
+
+    constructor (private httpClient: HttpClient){
+
+    }
+
     private listaClientesAtualizada = new Subject <Cliente[]> ()
     private clientes: Cliente[] = []
     
-    getClientes(): Cliente[]{
-        //operador spread
-        return [...this.clientes]
+    getClientes(): void{
+        this.httpClient.get<{mensagem: string, clientes: Cliente[]}>('http://localhost:3000/api/clientes').subscribe(dados => {
+            this.clientes = dados.clientes
+            this.listaClientesAtualizada.next([...this.clientes])
+        })
     }
 
     adicionarCliente (nome: string, fone: string, email: string){

@@ -1,6 +1,9 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+
+import { HttpClientModule } from '@angular/common/http';
+
 import { NgModule } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button'
@@ -24,9 +27,10 @@ import { ClienteListaComponent } from './clientes/cliente-lista/cliente-lista.co
     ClienteListaComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
-    BrowserAnimationsModule,
+    HttpClientModule,
     MatButtonModule,
     MatCardModule,
     MatExpansionModule,
