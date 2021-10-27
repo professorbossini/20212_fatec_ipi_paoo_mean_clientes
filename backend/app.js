@@ -16,32 +16,13 @@ mongoose.connect(`mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.${M
 .catch((e) => console.log ("Conexão NOK: " + e))
 
 
-const clientes = [
-    {
-        id: '1',
-        nome: 'José',
-        fone: '11223344',
-        email: 'jose@email.com'
-    },
-    {
-        id: 2,
-        nome: 'Jaqueline',
-        fone: '77665588',
-        email: 'jaque@email.com'
-    },
-    {
-        id: 3,
-        nome: 'João',
-        fone: '777887788',
-        email: "joao@email.com"
-    }
-]
 
 
 //GET localhost:3000/api/clientes
 app.get ('/api/clientes', (req, res) => {
     Cliente.find()
     .then((documents) => {
+        console.log(documents)
         res.status(200).json({
             clientes: documents,
             mensagem: "Tudo OK" 
@@ -57,9 +38,27 @@ app.post('/api/clientes', (req, res) => {
         email: req.body.email
     })
     cliente.save()
-    console.log(cliente)
-    res.status(201).json({mensagem: "Cliente inserido"})
+    .then((clienteInserido) => {
+        console.log(cliente)
+        res.status(201).json({
+            mensagem: "Cliente inserido",
+            id: clienteInserido._id
+        })
+    })
 })
+
+//DELETE localhost:3000/api/clientes/123456
+//DELETE localhost:3000/api/clientes/abc
+app.delete('/api/clientes/:id', (req, res) => {
+    // DELETE FROM tb_clientes WHERE id = 123456
+    Cliente.deleteOne({_id: req.params.id})
+    .then((resultado) => {
+        console.log (resultado)
+        res.status(200).json({mensagem: 'Cliente removido'})
+    })
+})
+
+
 
 
 

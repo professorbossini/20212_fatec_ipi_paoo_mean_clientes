@@ -2,6 +2,7 @@ import { Cliente } from './cliente.model'
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Subject } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 //observable (Subject): Sofre eventos
 //observer: Deseja ficar sabendo dos eventos
@@ -19,9 +20,21 @@ export class ClienteService{
     private listaClientesAtualizada = new Subject <Cliente[]> ()
     private clientes: Cliente[] = []
     
+    // {_id: 1, nome: 'Joao', email: 'joao@email.com', fone: '123456'} => {id: 1, nome: 'Joao', email: 'joao@email.com', fone: '123456'}
     getClientes(): void{
-        this.httpClient.get<{mensagem: string, clientes: Cliente[]}>('http://localhost:3000/api/clientes').subscribe(dados => {
-            this.clientes = dados.clientes
+        this.httpClient.get<{mensagem: string, clientes: any}>('http://localhost:3000/api/clientes')
+        .pipe(map((dados) => {
+            return dados.clientes.map(cliente => {
+                return {
+                    id: cliente._id,
+                    nome: cliente.nome,
+                    fone: cliente.fone,
+                    email: cliente.email
+                }
+            })
+        }))
+        .subscribe(clientes => {
+            this.clientes = clientes
             this.listaClientesAtualizada.next([...this.clientes])
         })
     }
@@ -30,12 +43,23 @@ export class ClienteService{
         const cliente: Cliente = {
             nome, fone, email
         }
-        this.httpClient.post<{mensagem: string}>('http://localhost:3000/api/clientes', cliente)
+        this.httpClient.post<{mensagem: string, id: string}>('http://localhost:3000/api/clientes', cliente)
         .subscribe(dados => {
             console.log(dados.mensagem)
+            cliente.id = dados.id
             this.clientes.push(cliente)
             this.listaClientesAtualizada.next([...this.clientes])
         })
+    }
+
+    removerCliente (id: string): any{
+        this.httpClient.delete(`http://localhost:3000/api/clientes/${id}`)
+        .subscribe(
+            () =>{
+                this.clientes = this.clientes.filter(cli => cli.id !== id)
+                this.listaClientesAtualizada.next([...this.clientes])
+            }
+        )
     }
 
     getListaDeClientesAtualizadaObservable(){
