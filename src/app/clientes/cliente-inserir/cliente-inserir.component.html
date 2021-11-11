@@ -1,5 +1,5 @@
 <mat-card>
-    <form (submit)="onAdicionarCliente(clienteForm)"  #clienteForm="ngForm">
+    <form (submit)="onSalvarCliente(clienteForm)"  #clienteForm="ngForm">
 
     
     <mat-form-field
@@ -9,7 +9,7 @@
             matInput
             type="text"
             name="nome" 
-            ngModel
+            [ngModel]="cliente?.nome" 
             required
             minlength="3"
             />
@@ -30,7 +30,7 @@
             matInput 
             type="text" 
             name="fone"
-            ngModel
+            [ngModel]="cliente?.fone"
             required
             />
         <button
@@ -50,7 +50,7 @@
             matInput 
             type="email" 
             name="email"
-            ngModel
+            [ngModel]="cliente?.email"
             required
             email
             />
@@ -64,6 +64,6 @@
         <mat-error>E-mail inválido</mat-error>
     </mat-form-field>
    
-    <button mat-stroked-button color="primary" >Inserir Cliente</button>
+    <button mat-stroked-button color="accent" >Salvar Cliente</button>
 </form>
 </mat-card>

@@ -30,6 +30,16 @@ app.get ('/api/clientes', (req, res) => {
     })
 })
 
+app.get('/api/clientes/:id', (req, res) => {
+    Cliente.findById(req.params.id)
+    .then(cli => {
+        if (cli)
+            res.status(200).json(cli)
+        else
+            res.status(404).send({mensagem: "Cliente não encontrado!"})
+    })
+})
+
 //POST localhost:3000/api/clientes
 app.post('/api/clientes', (req, res) => {
     const cliente = new Cliente({
@@ -45,6 +55,25 @@ app.post('/api/clientes', (req, res) => {
             id: clienteInserido._id
         })
     })
+})
+
+app.put('/api/clientes/:id/', (req, res) => {
+    const cliente = new Cliente({
+        _id: req.params.id,
+        nome: req.body.nome,
+        fone: req.body.fone,
+        email: req.body.email
+    })
+
+    Cliente.updateOne(
+        {_id: req.params.id}, 
+        cliente
+    )
+    .then((resultado) => {
+        console.log(resultado)
+        res.status(200).json({mensagem: 'Atualização realizada com sucesso'})
+    })
+
 })
 
 //DELETE localhost:3000/api/clientes/123456
